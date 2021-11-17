@@ -1,5 +1,5 @@
 # Smart Contracts
-** NFT Marketplace **
+**NFT Marketplace**
 ## Group Members
 - Chafic Charafeddine
 - Remy Dillenseger
