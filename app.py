@@ -22,7 +22,7 @@ def load_contract():
     with open(Path('./contracts/compiled/artwork_abi.json')) as f:
         artwork_abi = json.load(f)
 
-    contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+    contract_address = os.getenv("SMART_CONTRACT_ADDRESS_1")
 
     # Load the contract
     contract = w3.eth.contract(
