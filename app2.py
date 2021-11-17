@@ -75,14 +75,14 @@ st.markdown("## Appraise Artwork")
 tokens = contract.functions.totalSupply().call()
 token_id = st.selectbox("Choose an Art Token ID", list(range(tokens)))
 new_appraisal_value = st.text_input("Enter the new appraisal amount")
-report_uri = st.text_area("Enter notes about the appraisal")
+appraisal_notes = st.text_area("Enter notes about the appraisal")
 if st.button("Appraise Artwork"):
 
     # Use the token_id and the report_uri to record the appraisal
     tx_hash = contract.functions.newAppraisal(
         token_id,
         int(new_appraisal_value),
-        report_uri
+        appraisal_notes
     ).transact({"from": w3.eth.accounts[0]})
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)
     st.write(receipt)
