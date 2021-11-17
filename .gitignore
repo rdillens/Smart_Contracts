@@ -1,5 +1,5 @@
 # dependencies
-.deps/
+#.deps/
 
 # artifacts
 /artifacts
