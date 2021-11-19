@@ -8,7 +8,10 @@ import streamlit as st
 load_dotenv()
 
 # Define and connect a new Web3 provider
-w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+# @TODO: check if .env exists, if not create it
+# @TODO: check if key exists in .env file. If not, prompt user to enter it.
+provider = os.getenv("WEB3_PROVIDER_URI")
+w3 = Web3(Web3.HTTPProvider(provider))
 
 ################################################################################
 # Contract Helper function:
@@ -21,11 +24,14 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 def load_contract():
 
     # Load the contract ABI
+    # @TODO: check if ./contracts/compiled/artregistry_abi.json exists.
+    # If not, prompt user for the file
     with open(Path('./contracts/compiled/artregistry_abi.json')) as f:
         contract_abi = json.load(f)
 
     # Set the contract address (this is the address of the deployed contract)
-    contract_address = os.getenv("SMART_CONTRACT_ADDRESS_2")
+    # @TODO: check if key exists in .env file. If not, prompt user to enter it.
+    contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
 
     # Get the contract
     contract = w3.eth.contract(
