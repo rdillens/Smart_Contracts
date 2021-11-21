@@ -23,7 +23,7 @@ w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 def load_contract():
 
     # Load the contract ABI
-    with open(Path('./contracts/compiled/artregistry_abi.json')) as f:
+    with open(Path('./contracts/compiled/artregistry_abi_ipfs.json')) as f:
         contract_abi = json.load(f)
 
     # Set the contract address (this is the address of the deployed contract)
@@ -61,6 +61,7 @@ def pin_artwork(artwork_name, artwork_file):
     json_ipfs_hash = pin_json_to_ipfs(json_data)
 
     return json_ipfs_hash
+    # return ipfs_file_hash
 
 
 def pin_appraisal_report(report_content):
@@ -85,13 +86,13 @@ initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
 file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
 if st.button("Register Artwork"):
     # Use the `pin_artwork` helper function to pin the file to IPFS
-    artwork_ipfs_hash =  pin_artwork(artist_name, file)
+    artwork_ipfs_hash =  pin_artwork(artwork_name, file)
     artwork_uri = f"ipfs://{artwork_ipfs_hash}"
     tx_hash = contract.functions.registerArtwork(
         address,
-        artwork_name,
-        artist_name,
-        int(initial_appraisal_value),
+        # artwork_name,
+        # artist_name,
+        # int(initial_appraisal_value),
         artwork_uri
     ).transact({'from': address, 'gas': 1000000})
     receipt = w3.eth.waitForTransactionReceipt(tx_hash)

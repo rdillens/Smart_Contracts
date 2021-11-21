@@ -38,3 +38,7 @@ def pin_json_to_ipfs(json):
     print(r.json())
     ipfs_hash = r.json()["IpfsHash"]
     return ipfs_hash
+
+def parse_ipfs(ipfs_uri):
+    # @TODO: use the pinata api to pull info given the uri hash
+    pass
