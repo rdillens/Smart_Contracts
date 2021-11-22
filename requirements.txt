@@ -1,4 +1,0 @@
-streamlit
-dotenv
-web3 
-streamlit-pages
