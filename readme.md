@@ -40,6 +40,20 @@ Create new environment in conde with depenencies:
 ```bash
 conda create  --name SmartContracts_env python=3.7 --file requirements.txt
 ```
+
+Or install the following packages:
+```bash
+pip install streamlit
+```
+```bash
+pip install streamlit-pages
+```
+```bash
+pip install python-dotenv
+```
+```bash
+pip install web3
+```
 # Getting Started
 
 ## Step 1: Run Ganache
