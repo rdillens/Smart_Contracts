@@ -39,23 +39,13 @@ def load_contract():
 
 # Load the contract
 contract = load_contract()
-# total_supply = contract.functions.totalSupply().transact({'from': address, "gas": 1000000})
 
-token_list = range(contract.functions.balanceOf(address).call())
-token_selected = st.selectbox("Token ID", token_list)
-# st.write(contract.functions.balanceOf(address).call())
+token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
 token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
 token_uri = contract.functions.tokenURI(token_address).call()
-# st.write(token_address)
-# st.write(token_uri)
 url_prefix = "https://ipfs.io/ipfs/"
 url= url_prefix + f"{token_uri[7:]}"
-# st.markdown(f"[Artwork IPFS Gateway Link]({url})")
 resp = requests.get(url).content
 parsed_resp = json.loads(resp)
-# st.write(resp)
-# st.write(parsed_resp)
-# st.write(parsed_resp['image'])
 image_url = url_prefix + parsed_resp['image']
-# st.write(image_url)
 st.image(requests.get(image_url).content)
