@@ -1,3 +1,6 @@
+# Shelf Files
+/resources/shelf
+
 # VS Code settings
 .vscode/
 
