@@ -4,6 +4,7 @@ import requests
 from dotenv import load_dotenv
 load_dotenv()
 
+
 json_headers = {
     "Content-Type": "application/json",
     "pinata_api_key": os.getenv("PINATA_API_KEY"),
@@ -39,6 +40,6 @@ def pin_json_to_ipfs(json):
     ipfs_hash = r.json()["IpfsHash"]
     return ipfs_hash
 
-def parse_ipfs(ipfs_uri):
-    # @TODO: use the pinata api to pull info given the uri hash
-    pass
+# def parse_ipfs(ipfs_uri):
+#     # @TODO: use the pinata api to pull info given the uri hash
+#     pass
