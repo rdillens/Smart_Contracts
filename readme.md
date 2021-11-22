@@ -44,12 +44,13 @@ conda create  --name SmartContracts_env python=3.7 --file requirements.txt
 
 ## Step 1: Run Ganache
 
-Choose Quickstart
+ ### Choose Quickstart
 
 ![](/images/ganache-quickstart.PNG)
 
 
-Ganache provides a local development blockchain for our app.
+ ### Ganache provides a local development blockchain for our app.
+
 
 ![](/images/ganache-open.PNG)
 
@@ -64,10 +65,12 @@ Ganache provides a local development blockchain for our app.
 ## Step 5: Copy Contract Address Into .env File
 
 ## Step 6: Copy Ganache URI to .env file
+
+### The RPC URL needs to be needs to be added to WEB3_PROVIDER_URI property of the .env file. 
 ![](/images/ganache-open_rpc-server-highlighted.PNG)
 
-Sample .env file that includes our app to use the WEB3 Provider to connect to our local block chain using the Ganache RPC Server URL
-
+ 
+ ### The .env file WEB3_PROVIDER_URI containes the Ganache RPC URL to allow the  WEB3 Provider to connect to our local block chain provided by Ganache.
 
 ```bash
 PINATA_API_KEY=
