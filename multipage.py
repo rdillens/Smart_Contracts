@@ -7,6 +7,7 @@ import json
 from web3 import Web3
 import shelve
 import utils.helper_functions as hf
+import requests
 from utils.pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 
@@ -30,35 +31,79 @@ def load_contract():
     return contract
 
 
-def home():
-    st.write(f"{contract} \n {address}")
+def register():
+    st.markdown("## Register New Artwork")
+    artwork_name = st.text_input("Enter the name of the artwork")
+    # artist_name = st.text_input("Enter the artist name")
+    # initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
+    file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+    if st.button("Register Artwork"):
+        # Use the `pin_artwork` helper function to pin the file to IPFS
+        artwork_ipfs_hash =  hf.pin_artwork(artwork_name, file)
+        artwork_uri = f"ipfs://{artwork_ipfs_hash}"
+        tx_hash = contract.functions.registerArtwork(
+            address,
+            # artwork_name,
+            # artist_name,
+            # int(initial_appraisal_value),
+            artwork_uri
+        ).transact({'from': address, 'gas': 1000000})
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        st.write("Transaction receipt mined:")
+        st.write(dict(receipt))
+        st.write("You can view the pinned metadata file with the following IPFS Gateway Link")
+        st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
+    st.markdown("---")
 
 
-def about():
-    st.write("Welcome to about page")
-    if st.button("Click about"):
-        st.write("Welcome to About page")
+def appraise():
+    st.markdown("## Appraise Artwork")
+    tokens = contract.functions.totalSupply().call()
+    token_id = st.selectbox("Choose an Art Token ID", list(range(tokens)))
+    new_appraisal_value = st.text_input("Enter the new appraisal amount")
+    appraisal_report_content = st.text_area("Enter details for the Appraisal Report")
+    if st.button("Appraise Artwork"):
+
+        # Use the `pin_appraisal_report` helper function
+        # to pin an appraisal report for the report URI
+        appraisal_report_ipfs_hash =  hf.pin_appraisal_report(appraisal_report_content)
+        report_uri = f"ipfs://{appraisal_report_ipfs_hash}"
+
+        # Use the token_id and the report_uri to record the appraisal
+        tx_hash = contract.functions.newAppraisal(
+            token_id,
+            int(new_appraisal_value),
+            report_uri
+        ).transact({"from": w3.eth.accounts[0]})
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        st.write(receipt)
+    st.markdown("---")
 
 
-def contact():
-    st.write("Welcome to contact page")
-    if st.button("Click Contact"):
-        st.write("Welcome to contact page")
+def exchange():
+    st.markdown("## Exchange")
+    if st.button("Purchase"):
+        st.write("Purchase is currently not avaliable")
 
+
+def browse_ipfs():
+    token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
+    token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
+    token_uri = contract.functions.tokenURI(token_address).call()
+    url_prefix = "https://ipfs.io/ipfs/"
+    url= url_prefix + f"{token_uri[7:]}"
+    resp = requests.get(url).content
+    parsed_resp = json.loads(resp)
+    image_url = url_prefix + parsed_resp['image']
+    st.image(requests.get(image_url).content)
 
 if __name__ == "__main__":
-    # Check that shelf file exists, if not it is created
-    hf.check_for_shelf()
     # Define and connect a new Web3 provider
     w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 
     # Load the contract
     contract = load_contract()
     st.title("Art Registry Appraisal System")
-
-    # Get username
-    username = hf.get_username()
-    st.sidebar.header(f"Hello {username}!")
 
     # Account address sidebar selectbox
     accounts = w3.eth.accounts
@@ -68,12 +113,12 @@ if __name__ == "__main__":
         help="Select a wallet address associated with your account",
     )
 
-
-    # Define the multipage app
+        # Define the multipage app
     app = MultiPage()
     # Add pages to the app
-    app.add_page("Home",home)
-    app.add_page("About",about)
-    app.add_page("Contact",contact)
+    app.add_page("Collection", browse_ipfs)
+    app.add_page("Register Artwork", register)
+    app.add_page("Appraise", appraise)
+    app.add_page("Exchange", exchange)
     # Run the multipage app
     app.run()
