@@ -15,18 +15,19 @@ check_for_shelf()
 
 
 def get_username():
-    user_box = st.empty()
     with shelve.open(shelf_path + '/shelf') as sh:
         if 'username' in sh:
             username = sh['username']
         else:
-            with user_box.container():
-                with user_box.form("add_user_form", clear_on_submit=False):
-                    username = st.text_input("Enter username")
-                    user_submit = st.form_submit_button("Add User")
-                    if user_submit:
-                        sh['username'] = username
-        user_box.header(f"Hello {sh['username']}!")
+            # with user_box.container():
+            user_box = st.sidebar.empty()
+            with user_box.form("add_user_form", clear_on_submit=False):
+                username = st.text_input("Enter username")
+                user_submit = st.form_submit_button("Add User")
+                if user_submit:
+                    sh['username'] = username
+                    # user_box.empty()
+        # user_box.header(f"Hello {sh['username']}!")
     return username
 
 
