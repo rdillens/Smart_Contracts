@@ -106,14 +106,14 @@ def browse():
     token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
     try:
         token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
-    except:
-        pass
-    else:
         token_uri = contract.functions.tokenURI(token_address).call()
         url_prefix = "https://ipfs.io/ipfs/"
         url= url_prefix + f"{token_uri[7:]}"
         resp = requests.get(url).content
         parsed_resp = json.loads(resp)
+    except:
+        pass
+    else:
         image_url = url_prefix + parsed_resp['image']
         st.image(requests.get(image_url).content)
 
