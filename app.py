@@ -4,7 +4,6 @@ from web3 import Web3
 from pathlib import Path
 from dotenv import load_dotenv
 import streamlit as st
-
 from utils.pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
 
 load_dotenv()
