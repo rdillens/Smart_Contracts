@@ -31,12 +31,31 @@ def load_contract():
     return contract
 
 
+################################################################################
+# Register Artwork function:
+# 1. Registers artwork using smart contract
+# 2. Pins file to IPFS
+################################################################################
 def register():
     st.markdown("## Register New Artwork")
-    artwork_name = st.text_input("Enter the name of the artwork")
-    artist_name = st.text_input("Enter the artist name")
-    initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
+    # Get artwork name from user input
+    artwork_name = st.text_input(
+        label="Artwork Name",
+        help="Enter the name of the artwork",
+    )
+    # Get artist name from user input
+    artist_name = st.text_input(
+        label="Artist Name",
+        help="Enter the artist name"
+    )
+    # Get appraisal value from user input
+    initial_appraisal_value = st.text_input(
+        label="Value",
+        help="Enter the initial appraisal value"
+    )
+    # Get file from user upload
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+
     if st.button("Register Artwork"):
         # Use the `pin_artwork` helper function to pin the file to IPFS
         artwork_ipfs_hash =  hf.pin_artwork(artwork_name, file)
@@ -55,17 +74,23 @@ def register():
         st.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
     st.markdown("---")
 
-
+################################################################################
+# Appraise Artwork function:
+# 1. Generates artwork appraisal log entry
+# 2. Processes transaction using the contract's newAppraisal function
+################################################################################
 def appraise():
     st.markdown("## Appraise Artwork")
     tokens = contract.functions.totalSupply().call()
     token_id = st.selectbox("Choose an Art Token ID", list(range(tokens)))
+    art_collection_info = contract.functions.artCollection(token_id).call()
+    st.title(f"{art_collection_info[0]}")
+    st.write(f"Artist: {art_collection_info[1]}")
+    st.write(f"Value ${art_collection_info[2]}")
     new_appraisal_value = st.text_input("Enter the new appraisal amount")
     appraisal_report_content = st.text_area("Enter details for the Appraisal Report")
     if st.button("Appraise Artwork"):
-
-        # Use the `pin_appraisal_report` helper function
-        # to pin an appraisal report for the report URI
+        # Use helper function to pin an appraisal report for the report URI
         appraisal_report_ipfs_hash =  hf.pin_appraisal_report(appraisal_report_content)
         report_uri = f"ipfs://{appraisal_report_ipfs_hash}"
 
@@ -74,7 +99,8 @@ def appraise():
             token_id,
             int(new_appraisal_value),
             report_uri
-        ).transact({"from": w3.eth.accounts[0]})
+        ).transact({"from": address})
+        # ).transact({"from": w3.eth.accounts[0]})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
         st.write(receipt)
     st.markdown("---")
@@ -83,15 +109,20 @@ def appraise():
 def exchange():
     st.markdown("## Exchange")
     for token_id in range(contract.functions.totalSupply().call()):
-        try:
-            st.write(f"Token ID: {token_id}")
-            token_uri = contract.functions.tokenURI(token_id).call()
-            st.image(get_ipfs_image(token_uri))
-        except AttributeError:
-            pass    
+        if contract.functions.ownerOf(token_id).call() != address:
+            try:
+                # st.write(f"Token ID: {token_id}")
+                token_uri = contract.functions.tokenURI(token_id).call()
+                st.title(get_token_name(token_uri))
+                st.image(get_ipfs_image(token_uri))
+            except AttributeError:
+                pass    
         
-    if st.button("Purchase"):
-        st.write("Purchase is currently not avaliable")
+            if st.button(
+                label="Purchase",
+                key=str(token_id),
+            ):
+                st.write("Purchase is currently not avaliable")
 
 
 def get_ipfs_image(token_uri):
@@ -101,6 +132,13 @@ def get_ipfs_image(token_uri):
     parsed_resp = json.loads(resp)
     image_url = url_prefix + parsed_resp['image']
     return requests.get(image_url).content
+
+def get_token_name(token_uri):
+    url_prefix = "https://ipfs.io/ipfs/"
+    url= url_prefix + f"{token_uri[7:]}"
+    resp = requests.get(url).content
+    parsed_resp = json.loads(resp)
+    return parsed_resp['name']
 
 def browse():
     token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
@@ -114,31 +152,101 @@ def browse():
     except:
         pass
     else:
+        art_collection_info = contract.functions.artCollection(token_address).call()
         image_url = url_prefix + parsed_resp['image']
+        st.title(f"{art_collection_info[0]}")
         st.image(requests.get(image_url).content)
+        st.write(f"Artist: {art_collection_info[1]}")
+        st.write(f"Value ${art_collection_info[2]}")
 
+    # --- Appraise artwork --- #
+        new_appraisal_value = st.text_input("Enter the new appraisal amount")
+        appraisal_report_content = st.text_area("Enter details for the Appraisal Report")
+        if st.button("Appraise Artwork"):
+            # Use helper function to pin an appraisal report for the report URI
+            appraisal_report_ipfs_hash =  hf.pin_appraisal_report(appraisal_report_content)
+            report_uri = f"ipfs://{appraisal_report_ipfs_hash}"
+
+            # Use the token_id and the report_uri to record the appraisal
+            tx_hash = contract.functions.newAppraisal(
+                token_address,
+                int(new_appraisal_value),
+                report_uri
+            ).transact({"from": address})
+            receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+            st.info(receipt)
+
+
+# Execute this code if this file is run as main python app
 if __name__ == "__main__":
+    # Title displayed above all tabs
+    st.title("NFT Marketplace")
+
     # Define and connect a new Web3 provider
     w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
 
     # Load the contract
     contract = load_contract()
-    st.title("Art Registry Appraisal System")
 
-    # Account address sidebar selectbox
+# --- Sidebar items --- #
+        # Account address selectbox
     accounts = w3.eth.accounts
     address = st.sidebar.selectbox(
         label="Account", 
         options=accounts,
         help="Select a wallet address associated with your account",
     )
+    # Sidebar header
+    st.sidebar.header(f"Account  {accounts.index(address)}")
+    # Account balance - number of tokens owned by the selected address
+    st.sidebar.write(f"Tokens owned: {contract.functions.balanceOf(address).call()}")
 
+# --- Register new artwork --- #
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("## Register New Artwork")
+    # Get artwork name from user input
+    artwork_name = st.sidebar.text_input(
+        label="Artwork Name",
+        help="Enter the name of the artwork",
+    )
+    # Get artist name from user input
+    artist_name = st.sidebar.text_input(
+        label="Artist Name",
+        help="Enter the artist name"
+    )
+    # Get appraisal value from user input
+    initial_appraisal_value = st.sidebar.text_input(
+        label="Value",
+        help="Enter the initial appraisal value"
+    )
+    # Get file from user upload
+    file = st.sidebar.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
+
+    if st.sidebar.button("Register Artwork"):
+        # Use the `pin_artwork` helper function to pin the file to IPFS
+        artwork_ipfs_hash =  hf.pin_artwork(artwork_name, file)
+        artwork_uri = f"ipfs://{artwork_ipfs_hash}"
+        tx_hash = contract.functions.registerArtwork(
+            address,
+            artwork_name,
+            artist_name,
+            int(initial_appraisal_value),
+            artwork_uri
+        ).transact({'from': address, 'gas': 1000000})
+        receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+        # st.sidebar.write("Transaction receipt mined:")
+        # st.sidebar.write(dict(receipt))
+        st.sidebar.write("You can view the pinned metadata file with the following IPFS Gateway Link")
+        st.sidebar.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
+    st.sidebar.markdown("---")
+
+# --- Multipage App definition --- #
     # Define the multipage app
     app = MultiPage()
     # Add pages to the app
     app.add_page("Collection", browse)
-    app.add_page("Register Artwork", register)
-    app.add_page("Appraise", appraise)
+    # app.add_page("Register Artwork", register)
+    # app.add_page("Appraise", appraise)
     app.add_page("Exchange", exchange)
     # Run the multipage app
     app.run()
