@@ -109,6 +109,7 @@ def appraise():
 def exchange():
     st.markdown("## Exchange")
     for token_id in range(contract.functions.totalSupply().call()):
+        token_owner = contract.functions.ownerOf(token_id).call()
         if contract.functions.ownerOf(token_id).call() != address:
             try:
                 # st.write(f"Token ID: {token_id}")
@@ -123,6 +124,16 @@ def exchange():
                 key=str(token_id),
             ):
                 st.write("Purchase is currently not avaliable")
+                # tx_hash = contract.functions.safeTransferFrom(
+                tx_hash = contract.functions.transferFrom(
+                    token_owner, # from
+                    address, # to
+                    token_id # tokenId
+                ).transact({"from": token_owner})
+                # ).transact({"from": w3.eth.accounts[0]})
+                receipt = w3.eth.waitForTransactionReceipt(tx_hash)
+                st.write(receipt)
+
 
 
 def get_ipfs_image(token_uri):
