@@ -82,11 +82,27 @@ def appraise():
 
 def exchange():
     st.markdown("## Exchange")
+    for token_id in range(contract.functions.totalSupply().call()):
+        try:
+            st.write(f"Token ID: {token_id}")
+            token_uri = contract.functions.tokenURI(token_id).call()
+            st.image(get_ipfs_image(token_uri))
+        except AttributeError:
+            pass    
+        
     if st.button("Purchase"):
         st.write("Purchase is currently not avaliable")
 
 
-def browse_ipfs():
+def get_ipfs_image(token_uri):
+    url_prefix = "https://ipfs.io/ipfs/"
+    url= url_prefix + f"{token_uri[7:]}"
+    resp = requests.get(url).content
+    parsed_resp = json.loads(resp)
+    image_url = url_prefix + parsed_resp['image']
+    return requests.get(image_url).content
+
+def browse():
     token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
     token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
     token_uri = contract.functions.tokenURI(token_address).call()
@@ -116,7 +132,7 @@ if __name__ == "__main__":
         # Define the multipage app
     app = MultiPage()
     # Add pages to the app
-    app.add_page("Collection", browse_ipfs)
+    app.add_page("Collection", browse)
     app.add_page("Register Artwork", register)
     app.add_page("Appraise", appraise)
     app.add_page("Exchange", exchange)
