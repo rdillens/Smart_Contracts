@@ -19,7 +19,7 @@ from utils.pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_jso
 @st.cache(allow_output_mutation=True)
 def load_contract():
     # Load the contract ABI
-    with open(Path('./contracts/compiled/artregistry_abi_ipfs.json')) as f:
+    with open(Path('./contracts/compiled/artregistry_abi.json')) as f:
         contract_abi = json.load(f)
     # Set the contract address (this is the address of the deployed contract)
     contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
@@ -34,8 +34,8 @@ def load_contract():
 def register():
     st.markdown("## Register New Artwork")
     artwork_name = st.text_input("Enter the name of the artwork")
-    # artist_name = st.text_input("Enter the artist name")
-    # initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
+    artist_name = st.text_input("Enter the artist name")
+    initial_appraisal_value = st.text_input("Enter the initial appraisal amount")
     file = st.file_uploader("Upload Artwork", type=["jpg", "jpeg", "png"])
     if st.button("Register Artwork"):
         # Use the `pin_artwork` helper function to pin the file to IPFS
@@ -43,9 +43,9 @@ def register():
         artwork_uri = f"ipfs://{artwork_ipfs_hash}"
         tx_hash = contract.functions.registerArtwork(
             address,
-            # artwork_name,
-            # artist_name,
-            # int(initial_appraisal_value),
+            artwork_name,
+            artist_name,
+            int(initial_appraisal_value),
             artwork_uri
         ).transact({'from': address, 'gas': 1000000})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
@@ -104,14 +104,18 @@ def get_ipfs_image(token_uri):
 
 def browse():
     token_selected = st.selectbox("Token ID", range(contract.functions.balanceOf(address).call()))
-    token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
-    token_uri = contract.functions.tokenURI(token_address).call()
-    url_prefix = "https://ipfs.io/ipfs/"
-    url= url_prefix + f"{token_uri[7:]}"
-    resp = requests.get(url).content
-    parsed_resp = json.loads(resp)
-    image_url = url_prefix + parsed_resp['image']
-    st.image(requests.get(image_url).content)
+    try:
+        token_address = contract.functions.tokenOfOwnerByIndex(address, token_selected).call()
+        token_uri = contract.functions.tokenURI(token_address).call()
+        url_prefix = "https://ipfs.io/ipfs/"
+        url= url_prefix + f"{token_uri[7:]}"
+        resp = requests.get(url).content
+        parsed_resp = json.loads(resp)
+    except:
+        pass
+    else:
+        image_url = url_prefix + parsed_resp['image']
+        st.image(requests.get(image_url).content)
 
 if __name__ == "__main__":
     # Define and connect a new Web3 provider
@@ -129,7 +133,7 @@ if __name__ == "__main__":
         help="Select a wallet address associated with your account",
     )
 
-        # Define the multipage app
+    # Define the multipage app
     app = MultiPage()
     # Add pages to the app
     app.add_page("Collection", browse)
