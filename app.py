@@ -106,7 +106,7 @@ def appraise():
 
 
 def exchange():
-    st.header("Exchange")
+    # st.header("Exchange")
     for token_id in range(contract.functions.totalSupply().call()):
         token_owner = contract.functions.ownerOf(token_id).call()
         if contract.functions.ownerOf(token_id).call() != address:
