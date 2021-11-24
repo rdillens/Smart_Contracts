@@ -76,26 +76,33 @@ pip install web3
 
 
  ### Ganache provides a local development blockchain for our app.
+![](resources/images/ganache-open.PNG)
 
-
-![](/images/ganache-open.PNG)
 
 ## Step 2: Open Remix
 ![Open Remix](resources/images/remix-open.PNG)
 
 
-## Step 3: Import Repo Into Remix
 
-## Step 4: Deploy Contract 
+## Step 3: Import contract file Into Remix
+![Load Contrat](resources\images\loading-contract-to-remix.PNG)
 
-## Step 5: Copy Contract Address Into .env File
+
+## Step 4: Compile Contract 
+![Deploy Contract](resources\images\compile-contract.PNG)
+
+
+## Step 5: Copy Contract Address and Paste Into .env File
+![Deploy Contract](resources\images\copy-smartcontract-address.PNG)
 
 ## Step 6: Copy Ganache URI to .env file
 
 ### The RPC URL needs to be needs to be added to WEB3_PROVIDER_URI property of the .env file. 
+
 ![](resources/images/ganache-open_rpc-server-highlighted.PNG)
 
  ### The .env file WEB3_PROVIDER_URI containes the Ganache RPC URL to allow the  WEB3 Provider to connect to our local block chain provided by Ganache.
+
 
 ```bash
 PINATA_API_KEY= XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
@@ -104,11 +111,13 @@ WEB3_PROVIDER_URI=http://127.0.0.1:7545
 SMART_CONTRACT_ADDRESS= [Address of Deployed Contract]
 ```
 
-## Step 7:  Streamlit App
+## Step 7:  Run Streamlit App
 
 ```bash
 streamlit run app.py
 ```
+
+![Run Streallit App](resources\images\app-screenshot.PNG)
 
 
 ## Contributors
