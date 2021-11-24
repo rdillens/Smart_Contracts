@@ -30,7 +30,6 @@ We use the ERC-721 Non-Fungible Token Standard contract to demostrate how users 
 - [Remix-Etherium IDE](https://remix.ethereum.org/) 
 
 
-
 ### Clone
 
 Clone a copy of the repo:
@@ -85,15 +84,15 @@ pip install web3
 
 
 ## Step 3: Import contract file Into Remix
-![Load Contrat](resources\images\loading-contract-to-remix.PNG)
+![Load Contrat](resources/images/loading-contract-to-remix.PNG)
 
 
 ## Step 4: Compile Contract 
-![Deploy Contract](resources\images\compile-contract.PNG)
+![Deploy Contract](resources/images/compile-contract.PNG)
 
 
 ## Step 5: Copy Contract Address and Paste Into .env File
-![Deploy Contract](resources\images\copy-smartcontract-address.PNG)
+![Deploy Contract](resources/images/copy-smartcontract-address.PNG)
 
 ## Step 6: Copy Ganache URI to .env file
 
@@ -117,7 +116,7 @@ SMART_CONTRACT_ADDRESS= [Address of Deployed Contract]
 streamlit run app.py
 ```
 
-![Run Streallit App](resources\images\app-screenshot.PNG)
+![Run Streallit App](resources/images/app-screenshot.PNG)
 
 
 ## Contributors
