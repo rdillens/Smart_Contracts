@@ -6,21 +6,33 @@ A decentralized application (dApp) is an application built on a decentralized ne
 
 This project demonstrates how to build decentralized applications (dApps) and decentralized storage for non-fungible token (NFT) contracts.  We do this by building our (dApp) smart contract on the the ERC-721 Non-Fungible Token Standard defined in the Ethereum Improvement Proposal (EIP)–721.
 
-We use this ERC-721 Non-Fungible Token Standard contract to demostrate how users can buy or sell artwork NFTs in a decentralized marketplace. Users are able to select their accounts and register new artwork tokens through a web interface. Users will also be able to display the tokens for their accounts so that they can display the artwork on the webpage.
+We use the ERC-721 Non-Fungible Token Standard contract to demostrate how users can buy or sell artwork NFTs in a decentralized marketplace. Users are able to select their accounts and register new artwork tokens through a web interface. Users will also be able to display the tokens for their accounts so that they can display the artwork on the webpage.
+
 
 
 # Initial SetUp
 
-### Prerequisites
+### Installing Required Tools
+
+
+
+- [Ganace](https://www.trufflesuite.com/ganache/) - Ganache is a tool that allows you to quickly set up a local blockchain, which you can use to test and develop smart contracts.  Follow the instructions on the Ganache Download page to download and install this tool on your local machine.
+
+- [Metamask](https://metamask.io/) - MetaMask is a digital wallet for the Ethereum blockchain. Follow the instructions on the MetaMask Download page to install MetaMask in your web browser.
+
+- [Pinata (Create a Token)](https://www.pinata.cloud/) - Pinata is for storing and managing your NFT media . It uses the Interplanetary File System, or IPFS, to create content-addressable hashes of data. Follow the instructions on the Pinata page to create a token and start using Pinata
+
+
+### Other Requirements
 
 - [Git](https://git-scm.com/downloads) 
 - [Visual Studio Code](https://code.visualstudio.com/)
 - [Remix-Etherium IDE](https://remix.ethereum.org/) 
-- [Ganace](https://www.trufflesuite.com/ganache/)
-- [Metamask](https://metamask.io/)
-- [Pinata (Create a Token)](https://www.pinata.cloud/)
+
+
 
 ### Clone
+
 Clone a copy of the repo:
 
 ```bash
@@ -72,7 +84,7 @@ pip install web3
 ![Open Remix](resources/images/remix-open.PNG)
 
 
-## Step 3: Import Repo Into Remix using dGit
+## Step 3: Import Repo Into Remix
 
 ## Step 4: Deploy Contract 
 
@@ -81,24 +93,23 @@ pip install web3
 ## Step 6: Copy Ganache URI to .env file
 
 ### The RPC URL needs to be needs to be added to WEB3_PROVIDER_URI property of the .env file. 
-![](/images/ganache-open_rpc-server-highlighted.PNG)
+![](resources/images/ganache-open_rpc-server-highlighted.PNG)
 
- 
  ### The .env file WEB3_PROVIDER_URI containes the Ganache RPC URL to allow the  WEB3 Provider to connect to our local block chain provided by Ganache.
 
 ```bash
-PINATA_API_KEY=
-PINATA_SECRET_API_KEY=
+PINATA_API_KEY= XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+PINATA_SECRET_API_KEY= XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
 WEB3_PROVIDER_URI=http://127.0.0.1:7545
 SMART_CONTRACT_ADDRESS= [Address of Deployed Contract]
 ```
-
 
 ## Step 7:  Streamlit App
 
 ```bash
 streamlit run app.py
 ```
+
 
 ## Contributors
 - Chafic Charafeddine
