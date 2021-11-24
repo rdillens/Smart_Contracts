@@ -5,7 +5,6 @@ from pathlib import Path
 from dotenv import load_dotenv
 import json
 from web3 import Web3
-import shelve
 import utils.helper_functions as hf
 import requests
 from utils.pinata import pin_file_to_ipfs, pin_json_to_ipfs, convert_data_to_json
@@ -107,7 +106,7 @@ def appraise():
 
 
 def exchange():
-    st.markdown("## Exchange")
+    # st.header("Exchange")
     for token_id in range(contract.functions.totalSupply().call()):
         token_owner = contract.functions.ownerOf(token_id).call()
         if contract.functions.ownerOf(token_id).call() != address:
@@ -200,20 +199,17 @@ if __name__ == "__main__":
     contract = load_contract()
 
 # --- Sidebar items --- #
-        # Account address selectbox
+    # Account address selectbox
     accounts = w3.eth.accounts
     address = st.sidebar.selectbox(
         label="Account", 
         options=accounts,
         help="Select a wallet address associated with your account",
     )
-    # Sidebar header
-    st.sidebar.header(f"Account  {accounts.index(address)}")
     # Account balance - number of tokens owned by the selected address
     st.sidebar.write(f"Tokens owned: {contract.functions.balanceOf(address).call()}")
 
 # --- Register new artwork --- #
-    st.sidebar.markdown("---")
     st.sidebar.markdown("## Register New Artwork")
     # Get artwork name from user input
     artwork_name = st.sidebar.text_input(
@@ -249,7 +245,7 @@ if __name__ == "__main__":
         # st.sidebar.write(dict(receipt))
         st.sidebar.write("You can view the pinned metadata file with the following IPFS Gateway Link")
         st.sidebar.markdown(f"[Artwork IPFS Gateway Link](https://ipfs.io/ipfs/{artwork_ipfs_hash})")
-    st.sidebar.markdown("---")
+    # st.sidebar.markdown("---")
 
 # --- Multipage App definition --- #
     # Define the multipage app
