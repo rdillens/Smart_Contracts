@@ -101,7 +101,8 @@ def appraise():
         ).transact({"from": address})
         # ).transact({"from": w3.eth.accounts[0]})
         receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-        st.write(receipt)
+        st.balloons()
+        # st.write(receipt)
     st.markdown("---")
 
 
@@ -122,7 +123,7 @@ def exchange():
                 label="Purchase",
                 key=str(token_id),
             ):
-                st.write("Purchase is currently not avaliable")
+                # st.write("Purchase is currently not avaliable")
                 # tx_hash = contract.functions.safeTransferFrom(
                 tx_hash = contract.functions.transferFrom(
                     token_owner, # from
@@ -131,7 +132,8 @@ def exchange():
                 ).transact({"from": token_owner})
                 # ).transact({"from": w3.eth.accounts[0]})
                 receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-                st.write(receipt)
+                # st.write(receipt)
+                st.balloons()
 
 
 
@@ -184,7 +186,8 @@ def browse():
                 report_uri
             ).transact({"from": address})
             receipt = w3.eth.waitForTransactionReceipt(tx_hash)
-            st.info(receipt)
+            # st.info(receipt)
+            st.balloons()
 
 
 # Execute this code if this file is run as main python app
