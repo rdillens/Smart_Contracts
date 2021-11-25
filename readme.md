@@ -120,7 +120,7 @@ SMART_CONTRACT_ADDRESS= [Address of Deployed Contract]
 streamlit run app.py
 ```
 
-![Run Streallit App](resources/images/screenshot-app.PNG)
+![Run Streallit App](resources/images/screenshot-app.png)
 
 
 ## Contributors
