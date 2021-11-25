@@ -81,7 +81,7 @@ pip install web3
 
 
 ## Step 2: Open Remix
-![Open Remix](resources/images/remix-open.PNG)
+![Open Remix](resources/images/Remix-Open.PNG)
 
 
 
