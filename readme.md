@@ -81,7 +81,7 @@ pip install web3
 
 
 ## Step 2: Open Remix
-![Open Remix](resources/images/remix-open.PNG)
+![Open Remix](resources/images/Remix-Open.PNG)
 
 
 
@@ -120,7 +120,7 @@ SMART_CONTRACT_ADDRESS= [Address of Deployed Contract]
 streamlit run app.py
 ```
 
-![Run Streallit App](resources/images/screenshot-app.PNG)
+![Run Streallit App](resources/images/screenshot-app.png)
 
 
 ## Contributors
