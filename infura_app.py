@@ -95,7 +95,8 @@ def browse():
 def exchange():
     for token_id in range(contract.functions.totalSupply().call()):
         token_owner = contract.functions.ownerOf(token_id).call()
-        if contract.functions.ownerOf(token_id).call() != address:
+        if token_owner != address:
+        # if contract.functions.ownerOf(token_id).call() != address:
             try:
                 token_uri = contract.functions.tokenURI(token_id).call()
                 st.title(get_token_name(token_uri))
@@ -123,7 +124,7 @@ if __name__ == "__main__":
     st.title("NFT Marketplace")
 
     # Define and connect a new Web3 provider
-    w3 = Web3(Web3.HTTPProvider(os.getenv("INFURA_WEB3_PROVIDER_HTTP_URI")))
+    w3 = Web3(Web3.HTTPProvider(os.getenv("INFURA_WEB3_PROVIDER_URI")))
 
     # Load the contract
     contract = load_contract()
@@ -136,7 +137,8 @@ if __name__ == "__main__":
     #     options=accounts,
     #     help="Select a wallet address associated with your account",
     # )
-    address = "0x43f0164dCcf92051212050430815c4B1E23413f6"
+    # address = "0x43f0164dCcf92051212050430815c4B1E23413f6"
+    address = os.getenv("KOVAN_WALLET_ADDRESS")
     # Account balance - number of tokens owned by the selected address
     st.sidebar.write(f"Tokens owned: {contract.functions.balanceOf(address).call()}")
 
