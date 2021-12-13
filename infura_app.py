@@ -21,7 +21,7 @@ def load_contract():
     with open(Path('./contracts/compiled/artregistry_abi.json')) as f:
         contract_abi = json.load(f)
     # Set the contract address (this is the address of the deployed contract)
-    contract_address = os.getenv("SMART_CONTRACT_ADDRESS")
+    contract_address = os.getenv("KOVAN_SMART_CONTRACT_ADDRESS")
     # Get the contract
     contract = w3.eth.contract(
         address=contract_address,
@@ -123,19 +123,20 @@ if __name__ == "__main__":
     st.title("NFT Marketplace")
 
     # Define and connect a new Web3 provider
-    w3 = Web3(Web3.HTTPProvider(os.getenv("WEB3_PROVIDER_URI")))
+    w3 = Web3(Web3.HTTPProvider(os.getenv("INFURA_WEB3_PROVIDER_HTTP_URI")))
 
     # Load the contract
     contract = load_contract()
 
 # --- Sidebar items --- #
     # Account address selectbox
-    accounts = w3.eth.accounts
-    address = st.sidebar.selectbox(
-        label="Account", 
-        options=accounts,
-        help="Select a wallet address associated with your account",
-    )
+    # accounts = w3.eth.accounts
+    # address = st.sidebar.selectbox(
+    #     label="Account", 
+    #     options=accounts,
+    #     help="Select a wallet address associated with your account",
+    # )
+    address = "0x43f0164dCcf92051212050430815c4B1E23413f6"
     # Account balance - number of tokens owned by the selected address
     st.sidebar.write(f"Tokens owned: {contract.functions.balanceOf(address).call()}")
 
